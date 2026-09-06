@@ -10,7 +10,7 @@ const errorHandler_js_1 = require("../middleware/errorHandler.js");
 const mongoose_1 = require("mongoose");
 const cookieOptions = {
     httpOnly: true,
-    sameSite: "lax",
+    sameSite: env_js_1.env.nodeEnv === "production" ? "none" : "lax",
     secure: env_js_1.env.nodeEnv === "production",
     path: "/api/v1/auth",
     maxAge: 7 * 24 * 60 * 60 * 1000,
@@ -51,7 +51,11 @@ exports.logout = (0, errorHandler_js_1.asyncHandler)(async (req, res) => {
     if (token) {
         await (0, auth_service_js_1.revokeRefreshToken)(token);
     }
-    res.clearCookie(env_js_1.env.cookieName, { path: "/api/v1/auth" });
+    res.clearCookie(env_js_1.env.cookieName, {
+        path: "/api/v1/auth",
+        sameSite: env_js_1.env.nodeEnv === "production" ? "none" : "lax",
+        secure: env_js_1.env.nodeEnv === "production",
+    });
     return (0, apiResponse_js_1.ok)(res, "Logged out successfully");
 });
 exports.me = (0, errorHandler_js_1.asyncHandler)(async (req, res) => {
