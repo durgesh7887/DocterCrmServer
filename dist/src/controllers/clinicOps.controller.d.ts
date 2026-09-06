@@ -1,0 +1,14 @@
+import type { Request, Response } from "express";
+export declare const lookupPatients: (req: Request, res: Response, next: import("express").NextFunction) => void;
+export declare const listPatients: (req: Request, res: Response, next: import("express").NextFunction) => void;
+export declare const createPatientHandler: (req: Request, res: Response, next: import("express").NextFunction) => void;
+export declare const getPatient: (req: Request, res: Response, next: import("express").NextFunction) => void;
+export declare const createVisitHandler: (req: Request, res: Response, next: import("express").NextFunction) => void;
+export declare const createConsultationHandler: (req: Request, res: Response, next: import("express").NextFunction) => void;
+export declare const listFollowups: (req: Request, res: Response, next: import("express").NextFunction) => void;
+export declare const createFollowupHandler: (req: Request, res: Response, next: import("express").NextFunction) => void;
+export declare const completeFollowup: (req: Request, res: Response, next: import("express").NextFunction) => void;
+export declare const listAppointments: (req: Request, res: Response, next: import("express").NextFunction) => void;
+export declare const createAppointmentHandler: (req: Request, res: Response, next: import("express").NextFunction) => void;
+export declare const listClinicDoctors: (req: Request, res: Response, next: import("express").NextFunction) => void;
+export declare const clinicReports: (req: Request, res: Response, next: import("express").NextFunction) => void;

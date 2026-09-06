@@ -1,0 +1,21 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.adminRouter = void 0;
+const express_1 = require("express");
+const admin_controller_js_1 = require("../controllers/admin.controller.js");
+const user_controller_js_1 = require("../controllers/user.controller.js");
+const auth_js_1 = require("../middleware/auth.js");
+const errorHandler_js_1 = require("../middleware/errorHandler.js");
+const schemas_js_1 = require("../validators/schemas.js");
+exports.adminRouter = (0, express_1.Router)();
+exports.adminRouter.use(auth_js_1.authenticate, (0, auth_js_1.requireRoles)("SUPER_ADMIN"));
+exports.adminRouter.get("/dashboard", admin_controller_js_1.getSuperDashboard);
+exports.adminRouter.get("/users", (0, auth_js_1.requirePermission)("users.manage"), user_controller_js_1.listUsers);
+exports.adminRouter.post("/users", (0, auth_js_1.requirePermission)("users.manage"), (0, errorHandler_js_1.validateBody)(schemas_js_1.userCreateSchema), user_controller_js_1.createUserHandler);
+exports.adminRouter.post("/users/:userId/password-reset", (0, auth_js_1.requirePermission)("users.manage"), (0, errorHandler_js_1.validateBody)(schemas_js_1.passwordResetSchema), user_controller_js_1.resetPassword);
+exports.adminRouter.get("/payments", (0, auth_js_1.requirePermission)("payments.manage"), admin_controller_js_1.listPayments);
+exports.adminRouter.post("/payments", (0, auth_js_1.requirePermission)("payments.manage"), (0, errorHandler_js_1.validateBody)(schemas_js_1.paymentCreateSchema), admin_controller_js_1.createPayment);
+exports.adminRouter.get("/subscriptions", (0, auth_js_1.requirePermission)("payments.manage"), admin_controller_js_1.listSubscriptions);
+exports.adminRouter.get("/audit-logs", (0, auth_js_1.requirePermission)("audit.read"), admin_controller_js_1.listAuditLogs);
+exports.adminRouter.get("/settings", (0, auth_js_1.requirePermission)("settings.manage"), admin_controller_js_1.listSettings);
+//# sourceMappingURL=admin.routes.js.map
