@@ -21,25 +21,30 @@ function createApp() {
     app.set("trust proxy", 1);
     app.use((0, helmet_1.default)());
     const allowedOrigins = env_js_1.env.corsOrigins.map((o) => o.trim().toLowerCase());
-    app.use((0, cors_1.default)({
+    const corsOptions = {
         origin: (origin, callback) => {
             if (!origin)
                 return callback(null, true);
-            const normOrigin = origin.toLowerCase();
-            const originHost = normOrigin.replace(/^https?:\/\//, "");
-            const match = allowedOrigins.some((allowed) => {
-                const normAllowed = allowed.replace(/^https?:\/\//, "");
-                return normOrigin === allowed || originHost === normAllowed;
+            const norm = origin.toLowerCase().trim();
+            const isVercel = norm.endsWith(".vercel.app") || norm.includes(".vercel.app");
+            const isRender = norm.endsWith(".onrender.com") || norm.includes(".onrender.com");
+            const isLocalhost = norm.includes("localhost") || norm.includes("127.0.0.1");
+            const isInList = allowedOrigins.some((allowed) => {
+                const cleanAllowed = allowed.replace(/^https?:\/\//, "");
+                const cleanOrigin = norm.replace(/^https?:\/\//, "");
+                return cleanOrigin === cleanAllowed || norm === allowed;
             });
-            if (match || env_js_1.env.nodeEnv === "development") {
-                callback(null, true);
+            if (isVercel || isRender || isLocalhost || isInList || env_js_1.env.nodeEnv === "development") {
+                return callback(null, true);
             }
-            else {
-                callback(new Error(`CORS blocked for origin: ${origin}`));
-            }
+            return callback(null, false);
         },
         credentials: true,
-    }));
+        methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+        allowedHeaders: ["Content-Type", "Authorization", "Cookie", "X-Requested-With", "Accept"],
+        exposedHeaders: ["Set-Cookie"],
+    };
+    app.use((0, cors_1.default)(corsOptions));
     app.use(express_1.default.json({ limit: "1mb" }));
     app.use((0, cookie_parser_1.default)());
     app.use((0, express_rate_limit_1.default)({
